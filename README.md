@@ -356,3 +356,35 @@ class Solution(object):
         self.inOrder(root.right, res)
 ```
 18. https://leetcode.com/problems/binary-tree-paths/
+
+19. https://leetcode.com/problems/range-sum-of-bst/
+```
+class Solution(object): 
+      def rangeSumBST(self, root, L, R):
+        def dfs(node):
+            if node:
+                if L <= node.val <= R:
+                    self.ans += node.val
+                if L < node.val:
+                    dfs(node.left)
+                if node.val < R:
+                    dfs(node.right)
+
+        self.ans = 0
+        dfs(root)
+        return self.ans  
+```
+20. https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/
+```
+class Solution:
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        if not root:
+            return
+        if root == p or root == q:
+            return root
+        left = self.lowestCommonAncestor(root.left, p, q)
+        right = self.lowestCommonAncestor(root.right, p , q)
+        if left and right:
+            return root
+        return left or right
+```
