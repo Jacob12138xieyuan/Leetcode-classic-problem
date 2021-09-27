@@ -197,6 +197,8 @@ class Solution(object):
 ```
 10. https://leetcode.com/problems/largest-rectangle-in-histogram/
 ```
+1.暴力解法：从每根柱子向两边扩散 O(n^2)
+2.stack: 遇到比栈顶矮的柱子，栈顶高度形成的矩形就确定了
 class Solution(object):
     def largestRectangleArea(self, heights):
         """
