@@ -2,7 +2,7 @@
 
 ## Array & Linked list
 
-1. https://leetcode.com/problems/remove-duplicates-from-sorted-array/
+https://leetcode.com/problems/remove-duplicates-from-sorted-array/
 ```
 class Solution(object):
     def removeDuplicates(self, nums):
@@ -17,7 +17,7 @@ class Solution(object):
                 nums[i] = nums[j]
         return i+1
 ```
-2. https://leetcode.com/problems/merge-two-sorted-lists/
+https://leetcode.com/problems/merge-two-sorted-lists/
 ```
 class Solution(object):
     def mergeTwoLists(self, l1, l2):
@@ -39,7 +39,38 @@ class Solution(object):
         curr.next = l1 or l2
         return dummy.next
 ```
-3. https://leetcode.com/problems/merge-sorted-array/
+https://leetcode.com/problems/zigzag-conversion/
+Input: s = "PAYPALISHIRING", numRows = 3
+Output: "PAHNAPLSIIGYIR"
+P   A   H   N
+ A P L S I I G
+  Y   I   R
+```
+class Solution(object):
+    def convert(self, s, numRows):
+        # 遍历字符串，往下走把step设为1，往上走时step设为-1，row+=step就可以先增加后减少
+        # 如果只有一行直接return
+        if numRows == 1 or numRows > len(s):
+            return s
+        # row代表现在遍历的char应该在哪行，step代表是往下走（1）还是往上走（-1）
+        row, step = 0, 1
+        # 使用array存每一行的字符串，最后合并起来
+        zigzag = ['' for _ in range(numRows)]
+        for char in s:
+            # 把字符加入该行
+            zigzag[row] += char
+            # 在第一行，需要往下走
+            if row == 0:
+                step = 1
+            # 在最后一行，需要往上走
+            elif row == numRows - 1:
+                step = -1  
+            # 在中间行，不用改变方向
+            # 改变row值，往下或者往上走
+            row += step
+        return ''.join(zigzag)
+```
+https://leetcode.com/problems/merge-sorted-array/
 ```
 class Solution(object):
     def merge(self, nums1, m, nums2, n):
