@@ -358,6 +358,28 @@ class Solution(object):
         self.inOrder(root.right, res)
 ```
 18. https://leetcode.com/problems/binary-tree-paths/
+```
+class Solution(object):
+    def binaryTreePaths(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[str]
+        """
+        self.res = []
+        self.helper(root, '')
+        return self.res
+    
+    def helper(self, node, path):
+        # 如果不是叶子结点，append node.val数值，包含->,往左右递归
+        # 如果是叶子结点，append node.val数值，就不包含->, 放入res
+        if node.left:  
+            self.helper(node.left, path + str(node.val) + '->')
+        if node.right:  
+            self.helper(node.right, path + str(node.val) + '->')
+        if not node.left and not node.right:
+            path += str(node.val)
+            self.res.append(path)
+```
 
 19. https://leetcode.com/problems/range-sum-of-bst/
 ```
