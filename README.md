@@ -39,12 +39,14 @@ class Solution(object):
         curr.next = l1 or l2
         return dummy.next
 ```
+```
 https://leetcode.com/problems/zigzag-conversion/
 Input: s = "PAYPALISHIRING", numRows = 3
 Output: "PAHNAPLSIIGYIR"
 P   A   H   N
  A P L S I I G
   Y   I   R
+```
 ```
 class Solution(object):
     def convert(self, s, numRows):
