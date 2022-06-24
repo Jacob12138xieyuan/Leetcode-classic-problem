@@ -6,26 +6,21 @@ https://leetcode.com/problems/remove-duplicates-from-sorted-array/
 ```
 class Solution(object):
     def removeDuplicates(self, nums):
-        """
-        :type nums: List[int]
-        :rtype: int
-        """
+        # 使用快（j=1）慢（i=0）指针。只要j所在的元素不等于i所在的元素，就把i后面的元素变为j元素，i往右移
+        # 可以理解为i和i前面的数都是不重复的
         i = 0
         for j in range(1, len(nums)):
             if nums[i] != nums[j]:
                 i += 1
                 nums[i] = nums[j]
+        # 返回不重复元素长度
         return i+1
 ```
 https://leetcode.com/problems/merge-two-sorted-lists/
 ```
 class Solution(object):
     def mergeTwoLists(self, l1, l2):
-        """
-        :type l1: ListNode
-        :type l2: ListNode
-        :rtype: ListNode
-        """
+        # 假链表头
         dummy = ListNode(0)
         curr = dummy
         while l1 and l2:
@@ -36,6 +31,7 @@ class Solution(object):
                 curr.next = l2
                 l2 = l2.next
             curr = curr.next
+        # l1或l2有剩余
         curr.next = l1 or l2
         return dummy.next
 ```
@@ -43,13 +39,7 @@ https://leetcode.com/problems/merge-sorted-array/
 ```
 class Solution(object):
     def merge(self, nums1, m, nums2, n):
-        """
-        :type nums1: List[int]
-        :type m: int
-        :type nums2: List[int]
-        :type n: int
-        :rtype: None Do not return anything, modify nums1 in-place instead.
-        """
+        # 从数组后面开始比较
         while m > 0 and n > 0:
             if nums1[m-1] >= nums2[n-1]:
                 nums1[m+n-1] = nums1[m-1]
@@ -60,42 +50,49 @@ class Solution(object):
         if n > 0:
             nums1[:n] = nums2[:n]
 ```
-4. https://leetcode.com/problems/swap-nodes-in-pairs/
+https://leetcode.com/problems/swap-nodes-in-pairs/
+```
+Input: head = [1,2,3,4]
+Output: [2,1,4,3]
+```
 ```
 class Solution(object):
     def swapPairs(self, head):
-        """
-        :type head: ListNode
-        :rtype: ListNode
-        """
         if not head or not head.next: return head
         dummy = ListNode(0)
+        # 需要记录pair前面的位置
+        # 所以前面增加一个假头
         dummy.next = head
         cur = dummy
+        # 假头后面和后面的后面存在
         while cur.next and cur.next.next:
             first = cur.next # 1
             sec = cur.next.next # 2
+            # 注意顺序
             cur.next = sec # dummy->2
             first.next = sec.next # 1->3
-            sec.next = first # 3 = first
-            cur = cur.next.next # cur = 1
-        return dummy.next   
+            sec.next = first # 2 -> 1
+            # 重新设定cur，作为下一个pair前的位置
+            cur = first # cur = 1
+        return dummy.next
 ```
-5. https://leetcode.com/problems/3sum/
+https://leetcode.com/problems/3sum/
+```
+Input: nums = [-1,0,1,2,-1,-4]
+Output: [[-1,-1,2],[-1,0,1]]
+```
 ```
 class Solution(object):
     def threeSum(self, nums):
-        """
-        :type nums: List[int]
-        :rtype: List[List[int]]
-        """
         n = len(nums)
         res = []
         nums.sort()
-        # [-4,-1,-1,0,1,2]
+        # [-4,-1,-1,0,1,2], 排序，转化为2sum问题
         for i in range(n-1):
+            # 去掉重复元素情况
             if i > 0 and nums[i] == nums[i-1]:
                 continue
+            # 两边向中间收缩，找到2sum
             left = i+1
             right = n-1
             while left < right:
@@ -106,10 +103,12 @@ class Solution(object):
                     left+=1
                 else:
                     res.append([nums[i], nums[left], nums[right]])
+                    # 考虑[left, right]之间有重复元素的情况
                     while left+1 < right and nums[left] == nums[left+1]:
                         left += 1
                     while right-1 > left and nums[right] == nums[right-1]:
                         right -= 1
+                    # 找到3sum匹配，继续往中间收缩，因为可能出现[-2,-1,1,2]这种情况，和都为0
                     left += 1
                     right -= 1
         return res
