@@ -113,6 +113,52 @@ class Solution(object):
                     right -= 1
         return res
 ```
+https://leetcode.com/problems/median-of-two-sorted-arrays/
+```
+Input: nums1 = [1,3], nums2 = [2]
+Output: 2.00000
+Explanation: merged array = [1,2,3] and median is 2.
+```
+```
+class Solution(object):
+    # 思想：中位数就是把两个数组合起来一分为二的那个数
+    # 这个数位置的左边都比他小，右边都比他大。左边的数由左边的A和左边的B组成，右边也一样
+    # 所以要找到一个位置分割A，同时也就找到了分割位置B（A左+B左=half_len）。右边的元素都大于左边的元素
+    # 如果分割的位置恰好为中位数的位置的话，会满足条件：A右第一个元素>B左最后一个元素，B右第一个元素>A左最后一个元素
+    def findMedianSortedArrays(self, A, B):
+        m, n = len(A), len(B)
+        # 我们需要在更短的数组里面进行二分查找，我们认为更短的数组为A
+        if m > n:
+            A, B, m, n = B, A, n, m
+        if n == 0:
+            raise ValueError
+        # 在A里面进行二分查找，half_len是两个数组长度的一半
+        # m+n+1是为了处理奇数个的情况
+        imin, imax, half_len = 0, m, (m + n + 1) / 2
+        while imin <= imax:
+            i = (imin + imax) / 2 # A左边的长度
+            j = half_len - i      # B被分割后左边的长度（A左边长度+B左边的长度=half_len）
+            # 第一种情况，不满足A右第一个元素>B左最后一个元素，分割位置需要右移，同时判断A边界
+            if i < m and B[j-1] > A[i]: 
+                imin = i + 1
+            # 第二种情况，不满足B右第一个元素>A左最后一个元素，分割线需要左移，同时判断A边界
+            elif i > 0 and A[i-1] > B[j]:
+                imax = i - 1
+            # 满足两个条件，找到合适分割位置
+            else:
+                if i == 0: max_of_left = B[j-1]
+                elif j == 0: max_of_left = A[i-1]
+                else: max_of_left = max(A[i-1], B[j-1])
+
+                if (m + n) % 2 == 1:
+                    return max_of_left
+
+                if i == m: min_of_right = B[j]
+                elif j == n: min_of_right = A[i]
+                else: min_of_right = min(A[i], B[j])
+
+                return (max_of_left + min_of_right) / 2.0
+```
 ## String
 https://leetcode.com/problems/longest-substring-without-repeating-characters/
 ```
