@@ -39,39 +39,6 @@ class Solution(object):
         curr.next = l1 or l2
         return dummy.next
 ```
-https://leetcode.com/problems/zigzag-conversion/
-```
-Input: s = "PAYPALISHIRING", numRows = 3
-Output: "PAHNAPLSIIGYIR"
-P   A   H   N
- A P L S I I G
-  Y   I   R
-```
-```
-class Solution(object):
-    def convert(self, s, numRows):
-        # 遍历字符串，往下走把step设为1，往上走时step设为-1，row+=step就可以先增加后减少
-        # 如果只有一行直接return
-        if numRows == 1 or numRows > len(s):
-            return s
-        # row代表现在遍历的char应该在哪行，step代表是往下走（1）还是往上走（-1）
-        row, step = 0, 1
-        # 使用array存每一行的字符串，最后合并起来
-        zigzag = ['' for _ in range(numRows)]
-        for char in s:
-            # 把字符加入该行
-            zigzag[row] += char
-            # 在第一行，需要往下走
-            if row == 0:
-                step = 1
-            # 在最后一行，需要往上走
-            elif row == numRows - 1:
-                step = -1  
-            # 在中间行，不用改变方向
-            # 改变row值，往下或者往上走
-            row += step
-        return ''.join(zigzag)
-```
 https://leetcode.com/problems/merge-sorted-array/
 ```
 class Solution(object):
@@ -146,6 +113,69 @@ class Solution(object):
                     left += 1
                     right -= 1
         return res
+```
+## String
+https://leetcode.com/problems/longest-substring-without-repeating-characters/
+```
+Input: s = "tmmzuxt"
+Output: 5
+方法1: O（n^2）遍历每个字符，看从当前字符开始，往右看，用set记录已经形成的字符串，检查形成的最长不重复字符串是多少
+方法2: O（n）维护一个滑动窗口，记录元素最后出现位置。如果遇到相同元素，就说明新起始点应该在之前最后一次遇到这个元素位置后面一个位置。
+```
+```
+class Solution(object):
+    def lengthOfLongestSubstring(self, s):
+        # 滑动窗口map
+        hashmap = {}
+        max_ = 0
+        # 最长不重复字符串起始位置
+        start = 0
+        # 遍历字符串
+        for i in range(len(s)):
+            # 如果元素已经在map，说明出现了重复元素，新起始点应该在上一次遇到这个元素位置后面一个位置
+            # 还需要判断上一次遇到这个元素的位置要在start或之后，不然不成立（第二次遇到t，start在第二个m）
+            # 长度不会变大，所以不用判断长度
+            if s[i] in hashmap and start <= hashmap[s[i]]:
+                start = hashmap[s[i]] + 1
+                hashmap[s[i]] = i
+            # 如果元素不在map，记录元素下标，更新最大值
+            else:
+                hashmap[s[i]] = i
+                max_ = max(i-start+1, max_)
+        return max_
+```
+https://leetcode.com/problems/zigzag-conversion/
+```
+Input: s = "PAYPALISHIRING", numRows = 3
+Output: "PAHNAPLSIIGYIR"
+P   A   H   N
+ A P L S I I G
+  Y   I   R
+```
+```
+class Solution(object):
+    def convert(self, s, numRows):
+        # 遍历字符串，往下走把step设为1，往上走时step设为-1，row+=step就可以先增加后减少
+        # 如果只有一行直接return
+        if numRows == 1 or numRows > len(s):
+            return s
+        # row代表现在遍历的char应该在哪行，step代表是往下走（1）还是往上走（-1）
+        row, step = 0, 1
+        # 使用array存每一行的字符串，最后合并起来
+        zigzag = ['' for _ in range(numRows)]
+        for char in s:
+            # 把字符加入该行
+            zigzag[row] += char
+            # 在第一行，需要往下走
+            if row == 0:
+                step = 1
+            # 在最后一行，需要往上走
+            elif row == numRows - 1:
+                step = -1  
+            # 在中间行，不用改变方向
+            # 改变row值，往下或者往上走
+            row += step
+        return ''.join(zigzag)
 ```
 ## Map & Set
 6. https://leetcode.com/problems/valid-anagram/
