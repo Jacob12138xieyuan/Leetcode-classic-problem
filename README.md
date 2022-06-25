@@ -113,6 +113,32 @@ class Solution(object):
                     right -= 1
         return res
 ```
+https://leetcode.com/problems/merge-intervals/
+```
+Input: intervals = [[1,3],[2,6],[8,10],[15,18]]
+Output: [[1,6],[8,10],[15,18]]
+Explanation: Since intervals [1,3] and [2,6] overlap, merge them into [1,6].
+```
+```
+class Solution(object):
+    def merge(self, intervals):
+        # 对于多个interval的题，基本都要对起点或终点进行排序
+        result = []
+        if len(intervals) == 0:
+            return result
+        # 对起点进行排序，对之后的interval来说，只要起点小于前面interval的终点，就有交集
+        intervals.sort(key=lambda x:x[0])
+        result.append(intervals[0])
+        for i in range(1, len(intervals)):
+            # 没有交集，直接加入result
+            if result[-1][1] < intervals[i][0]:
+                result.append(intervals[i])
+            # 有交集，有两种情况，如果前面interval的终点小于当前interval的终点，需要更新前面interval的终点
+            else:
+                if result[-1][1] < intervals[i][1]:
+                    result[-1][1] = intervals[i][1]
+        return result
+```
 https://leetcode.com/problems/median-of-two-sorted-arrays/
 ```
 Input: nums1 = [1,3], nums2 = [2]
