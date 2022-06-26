@@ -215,6 +215,62 @@ class Solution(object):
                 max_ = max(i-start+1, max_)
         return max_
 ```
+https://leetcode.com/problems/longest-palindromic-substring/
+```
+Input: s = "babad"
+Output: "bab"
+Explanation: "aba" is also a valid answer.
+```
+```
+class Solution(object):
+    def longestPalindrome(self, s):
+        # 方法1：遍历每个字符，然后向两边扩散，检查是否成立回文字符串
+        res = ""
+        for i in range(len(s)):
+            # 从一个字符扩散 "aba"
+            tmp = self.helper(s, i, i)
+            if len(tmp) > len(res):
+                res = tmp
+            # 从两个字符扩散 "abba"
+            tmp = self.helper(s, i, i+1)
+            # 更新为比较长的回文字符串
+            if len(tmp) > len(res):
+                res = tmp
+        return res
+
+    def helper(self, s, l, r):
+        while l >= 0 and r < len(s) and s[l] == s[r]:
+            l -= 1; r += 1
+        return s[l+1:r]
+
+        # 方法2：动态规划。dp[i][j] 表示 s[i:j+1] 是否是回文字符串。2D数组，只用到右上三角形部分。空间复杂度高
+        # 基础case：当i==j时，表示同一个字符，肯定是回文字符串。dp对角线全为true，j>=i，所以是右上部分
+        # 状态转移方程：当s[i]==s[j]，两端字符一样，如果是相邻字符，或i和j之间的字符串 dp[i+1][j-1]也是回文的话，s[i:j+1]也是回文字符串，记录长度
+        # 当s[i]!=s[j]，显然s[i:j+1]不是回文字符串，dp默认为false，不做处理
+        # n = len(s)
+        # dp = [[False for _ in range(n)] for _ in range(n)]
+        # result = s[0]
+        # # 因为是dp右上部分，动态转移方程用到了dp[i+1][j-1]（左下），所以从对角线从下往上遍历
+        # # j为列，i为行
+        # for j in range(n):
+        #     for i in range(j, -1, -1):
+        #         if i == j:
+        #             dp[i][j] = True
+        #         else:
+        #             if s[i] == s[j] and (abs(j-i) == 1 or dp[i+1][j-1]):
+        #                 dp[i][j] = True
+        #                 if len(s[i:j+1]) > len(result):
+        #                     result = s[i:j+1]
+        #             # s[i] != s[j]默认为false
+        # return result
+        #     j=0    j=1    j=2   j=3    j=4
+        #i=0[[True, False, True, False, False], 
+        #i=1 [False, True, False, True, False], 
+        #i=2 [False, False, True, False, False], 
+        #i=3 [False, False, False, True, False], 
+        #i=4 [False, False, False, False, True]]
+        #s[0:3], "bab"是回文字符串；s[1:4], "aba"也是回文字符串，但是长度不大于"bab"，最后返回"bab"
+```
 https://leetcode.com/problems/zigzag-conversion/
 ```
 Input: s = "PAYPALISHIRING", numRows = 3
