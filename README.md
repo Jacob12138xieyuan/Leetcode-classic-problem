@@ -190,12 +190,12 @@ https://leetcode.com/problems/longest-substring-without-repeating-characters/
 ```
 Input: s = "tmmzuxt"
 Output: 5
-方法1: O（n^2）遍历每个字符，看从当前字符开始，往右看，用set记录已经形成的字符串，检查形成的最长不重复字符串是多少
-方法2: O（n）维护一个滑动窗口，记录元素最后出现位置。如果遇到相同元素，就说明新起始点应该在之前最后一次遇到这个元素位置后面一个位置。
 ```
 ```
 class Solution(object):
     def lengthOfLongestSubstring(self, s):
+        方法1: O（n^2）遍历每个字符，看从当前字符开始，往右看，用set记录已经形成的字符串，检查形成的最长不重复字符串是多少
+        方法2: O（n）维护一个滑动窗口，记录元素最后出现位置。如果遇到相同元素，就说明新起始点应该在之前最后一次遇到这个元素位置后面一个位置。
         # 滑动窗口map
         hashmap = {}
         max_ = 0
