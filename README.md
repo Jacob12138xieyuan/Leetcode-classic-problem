@@ -235,10 +235,12 @@ class Solution(object):
         return len(res)
 ```
 ## String
+没有重复字母的最长子字符串
 https://leetcode.com/problems/longest-substring-without-repeating-characters/
 ```
 Input: s = "tmmzuxt"
 Output: 5
+"mzuxt"
 ```
 ```
 class Solution(object):
@@ -264,6 +266,7 @@ class Solution(object):
                 max_ = max(i-start+1, max_)
         return max_
 ```
+最长回文子字符串
 https://leetcode.com/problems/longest-palindromic-substring/
 ```
 Input: s = "babad"
@@ -320,6 +323,7 @@ class Solution(object):
         #i=4 [False, False, False, False, True]]
         #s[0:3], "bab"是回文字符串；s[1:4], "aba"也是回文字符串，但是长度不大于"bab"，最后返回"bab"
 ```
+转化锯齿字符
 https://leetcode.com/problems/zigzag-conversion/
 ```
 Input: s = "PAYPALISHIRING", numRows = 3
@@ -354,7 +358,7 @@ class Solution(object):
         return ''.join(zigzag)
 ```
 ## Map & Set
-6. https://leetcode.com/problems/valid-anagram/
+https://leetcode.com/problems/valid-anagram/
 ```
 class Solution(object):
     def isAnagram(self, s, t):
