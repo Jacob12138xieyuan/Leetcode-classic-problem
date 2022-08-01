@@ -2,6 +2,7 @@
 
 ## Array & Linked list
 
+排序数组去重
 https://leetcode.com/problems/remove-duplicates-from-sorted-array/
 ```
 class Solution(object):
@@ -16,6 +17,7 @@ class Solution(object):
         # 返回不重复元素长度
         return i+1
 ```
+合并两个排序链表
 https://leetcode.com/problems/merge-two-sorted-lists/
 ```
 class Solution(object):
@@ -35,6 +37,7 @@ class Solution(object):
         curr.next = l1 or l2
         return dummy.next
 ```
+合并两个排序数组
 https://leetcode.com/problems/merge-sorted-array/
 ```
 class Solution(object):
@@ -50,6 +53,7 @@ class Solution(object):
         if n > 0:
             nums1[:n] = nums2[:n]
 ```
+成对交换链表节点
 https://leetcode.com/problems/swap-nodes-in-pairs/
 ```
 Input: head = [1,2,3,4]
@@ -76,6 +80,7 @@ class Solution(object):
             cur = first # cur = 1
         return dummy.next
 ```
+三个数之和为0
 https://leetcode.com/problems/3sum/
 ```
 Input: nums = [-1,0,1,2,-1,-4]
@@ -113,6 +118,7 @@ class Solution(object):
                     right -= 1
         return res
 ```
+合并多个范围
 https://leetcode.com/problems/merge-intervals/
 ```
 Input: intervals = [[1,3],[2,6],[8,10],[15,18]]
@@ -139,6 +145,7 @@ class Solution(object):
                     result[-1][1] = intervals[i][1]
         return result
 ```
+两个排序数组中的中位数
 https://leetcode.com/problems/median-of-two-sorted-arrays/
 ```
 Input: nums1 = [1,3], nums2 = [2]
@@ -184,6 +191,48 @@ class Solution(object):
                 else: min_of_right = min(A[i], B[j])
 
                 return (max_of_left + min_of_right) / 2.0
+```
+最长递增子序列
+https://leetcode.com/problems/longest-increasing-subsequence/
+```
+Input: nums = [10,9,2,5,3,7,101,18]
+Output: 4
+Explanation: The longest increasing subsequence is [2,3,7,101], therefore the length is 4.
+```
+```
+class Solution(object):
+    def lengthOfLIS(self, nums):
+        # 方法1: O(n^2)动态规划。dp[i]表示从头到第i个数（选择第i个数），最长子序列长度
+        # dp[i] = max(dp[i前面所有的数j]) + 1, 0 <= j <= i-1
+        # 当i比前面某一个元素大时nums[i] > nums[j]，有可能组成最长递增子序列，需要在可能的长度中取最大值
+        # 如果i没有比前面任何元素大，最长递增子序列就是本身，长度为1
+        # n = len(nums)
+        # dp = [1] * n
+        # for i in range(1, n):
+        #     preDPMax = dp[0] //前面元素结尾能组成最长递增子序列的最大长度
+        #     for j in range(i):
+        #         if nums[j] < nums[i]: //有可能组成最长递增子序列
+        #             preDPMax = max(preDPMax, dp[j]) //判断是否最长，如果更长则更新
+        #             dp[i] = preDPMax + 1
+        # # [10,9,2,5,3,7,101,18]
+        # # dp = [1, 1, 1, 2, 2, 3, 4, 4]
+        # return max(dp)
+    
+        # 方法2: O(nlogn)
+        # 遍历数组，构建结果数组res=[nums[0]].如果当前数字小于res里最大数，就找到比他大的最小数，替换掉；如果比最大数都大，就加入res最后
+        # 被替换数的位置用二分法找到，因为是有序数组。
+        # 最后构建的数组res不一定是得到的最长子序列，但是长度是一样的
+        res = [nums[0]]
+        for i in range(1, len(nums)):
+            if nums[i] == res[-1]: continue
+            elif nums[i] < res[-1]:
+                # 二分查找比nums[i]大的最小数
+                index = bisect_left(res, nums[i])
+                # 替换
+                res[index] = nums[i]
+            else:
+                res.append(nums[i])
+        return len(res)
 ```
 ## String
 https://leetcode.com/problems/longest-substring-without-repeating-characters/
