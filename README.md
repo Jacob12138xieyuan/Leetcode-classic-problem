@@ -5,6 +5,12 @@
 排序数组去重
 https://leetcode.com/problems/remove-duplicates-from-sorted-array/
 ```
+Input: nums = [0,0,1,1,1,2,2,3,3,4]
+Output: 5, nums = [0,1,2,3,4,_,_,_,_,_]
+Explanation: Your function should return k = 5, with the first five elements of nums being 0, 1, 2, 3, and 4 respectively.
+It does not matter what you leave beyond the returned k (hence they are underscores).
+```
+```
 class Solution(object):
     def removeDuplicates(self, nums):
         # 使用快（j=1）慢（i=0）指针。只要j所在的元素不等于i所在的元素，就把i后面的元素变为j元素，i往右移
@@ -20,9 +26,14 @@ class Solution(object):
 合并两个排序链表
 https://leetcode.com/problems/merge-two-sorted-lists/
 ```
+Input: list1 = [1,2,4], list2 = [1,3,4]
+Output: [1,1,2,3,4,4]
+```
+```
 class Solution(object):
     def mergeTwoLists(self, l1, l2):
         # 假链表头
+        # 取两个链表中较小值，然后将指针后移
         dummy = ListNode(0)
         curr = dummy
         while l1 and l2:
@@ -39,6 +50,12 @@ class Solution(object):
 ```
 合并两个排序数组
 https://leetcode.com/problems/merge-sorted-array/
+```
+Input: nums1 = [1,2,3,0,0,0], m = 3, nums2 = [2,5,6], n = 3
+Output: [1,2,2,3,5,6]
+Explanation: The arrays we are merging are [1,2,3] and [2,5,6].
+The result of the merge is [1,2,2,3,5,6] with the underlined elements coming from nums1.
+```
 ```
 class Solution(object):
     def merge(self, nums1, m, nums2, n):
@@ -221,7 +238,7 @@ class Solution(object):
         # 方法2: O(nlogn)
         # 遍历数组，构建结果数组res=[nums[0]].如果当前数字小于res里最大数，就找到比他大的最小数，替换掉；如果比最大数都大，就加入res最后
         # 被替换数的位置用二分法找到，因为是有序数组。
-        # 最后构建的数组res不一定是得到的最长子序列，但是长度是一样的
+        # 重要：最后构建的数组res不一定是得到的最长子序列，但是长度是一样的
         res = [nums[0]]
         for i in range(1, len(nums)):
             if nums[i] == res[-1]: continue
