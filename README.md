@@ -295,6 +295,7 @@ class Solution(object):
             l -= 1; r += 1
         return s[l+1:r]
 
+    # def longestPalindrome(self, s):
         # 方法2：动态规划。dp[i][j] 表示 s[i:j+1] 是否是回文字符串。2D数组，只用到右上三角形部分。空间复杂度高
         # 基础case：当i==j时，表示同一个字符，肯定是回文字符串。dp对角线全为true，j>=i，所以是右上部分
         # 状态转移方程：当s[i]==s[j]，两端字符一样，如果是相邻字符，或i和j之间的字符串 dp[i+1][j-1]也是回文的话，s[i:j+1]也是回文字符串，记录长度
@@ -323,7 +324,7 @@ class Solution(object):
         #i=4 [False, False, False, False, True]]
         #s[0:3], "bab"是回文字符串；s[1:4], "aba"也是回文字符串，但是长度不大于"bab"，最后返回"bab"
 ```
-转化锯齿字符
+锯齿状转化字符
 https://leetcode.com/problems/zigzag-conversion/
 ```
 Input: s = "PAYPALISHIRING", numRows = 3
@@ -358,15 +359,11 @@ class Solution(object):
         return ''.join(zigzag)
 ```
 ## Map & Set
+判断两个字符串是否为变位词
 https://leetcode.com/problems/valid-anagram/
 ```
 class Solution(object):
     def isAnagram(self, s, t):
-        """
-        :type s: str
-        :type t: str
-        :rtype: bool
-        """
         table1, table2 = {}, {}
         for i in s:
             if i not in table1:
@@ -380,7 +377,8 @@ class Solution(object):
                 table2[j] += 1
         return table1 == table2
 ```
-7. https://leetcode-cn.com/problems/group-anagrams/
+把多个变位词分组
+https://leetcode-cn.com/problems/group-anagrams/
 ```
 class Solution(object):
     def groupAnagrams(self, strs):
@@ -398,14 +396,12 @@ class Solution(object):
         return table.values()
 ```
 ## Stack & Set
-8. https://leetcode.com/problems/remove-all-adjacent-duplicates-in-string/
+字符中串移除相邻字符
+https://leetcode.com/problems/remove-all-adjacent-duplicates-in-string/
 ```
 class Solution(object):
     def removeDuplicates(self, S):
-        """
-        :type S: str
-        :rtype: str
-        """
+        # 使用栈
         stack = []
         for s in S:
             stack.append(s)
@@ -414,14 +410,11 @@ class Solution(object):
                 stack.pop()
         return ''.join(stack)
 ```
-9. https://leetcode.com/problems/remove-outermost-parentheses/
+去掉外层括号
+https://leetcode.com/problems/remove-outermost-parentheses/
 ```
 class Solution(object):
     def removeOuterParentheses(self, S):
-        """
-        :type S: str
-        :rtype: str
-        """
         res = ""
         left, right = 0, 0
         start, end = 0, 0
@@ -438,25 +431,41 @@ class Solution(object):
                 left, right = 0, 0
         return res
 ```
-10. https://leetcode.com/problems/largest-rectangle-in-histogram/
+直方图中最大能形成的长方形
+https://leetcode.com/problems/largest-rectangle-in-histogram/
 ```
-1.暴力解法：从每根柱子向两边扩散 O(n^2)
-2.stack: 遇到比栈顶矮的柱子，栈顶高度形成的矩形就确定了
+Input: heights = [2,1,5,6,2,3]
+Output: 10
+Explanation: The above is a histogram where width of each bar is 1.
+The largest rectangle is shown in the red area, which has an area = 10 units.
+```
+```
 class Solution(object):
     def largestRectangleArea(self, heights):
         """
         :type heights: List[int]
         :rtype: int
         """
-        heights.append(0)
-        stack = [-1]
+        # 1.暴力解法：从每根柱子向两边扩散 O(n^2)
+        
+        # 2.stack: 构建一个不严格递增的栈，存放柱子的index。遇到比栈顶矮的柱子，栈顶高度形成的矩形就确定了
+        # 高度为栈顶柱子高度，宽度是当前i柱子到栈顶前一个柱子stack[-2]的距离
+        heights.append(0) 
+        stack = [-1] # 设为-1相当于在前后各增加一个隐形柱子便于计算，第一个隐形柱子永远在栈底
         ans = 0
         for i in xrange(len(heights)):
+            # 第一个柱子永远不小于隐形柱子，所以直接加入stack
+            # 当遇到比栈顶矮的柱子，比如第五根2柱子，高度为6的柱子形成的最大矩形就确定了，为6
+            # 去掉6之后同时高度为5的柱子最大矩形也能确定了，宽度为i-2 = 2，面积为10
+            # 去掉5之后高度为1的柱子不能确定，插入高度为2的柱子，继续向右走
+            # 最后，栈剩下[-1, 1(1), 4(2), 5(3) ]。因为有高度为0的隐形柱子，所以能消耗完栈里面留下的柱子，留下隐形柱子
             while heights[i] < heights[stack[-1]]:
+                # 注意需要先pop再计算宽度，因为宽度不是当前柱子到栈顶柱子的距离，而是到栈顶前一个柱子stack[-2]的距离
+                # 比如当当前柱子为0，3柱子确定面积为3，2柱子确定面积的宽度为1柱子到0柱子的距离
                 h = heights[stack.pop()]
                 w = i - stack[-1] - 1
                 ans = max(ans, h * w)
-            stack.append(i)
+            stack.append(i)  
         heights.pop()
         return ans
 ```
