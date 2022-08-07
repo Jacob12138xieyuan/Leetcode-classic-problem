@@ -70,6 +70,42 @@ class Solution(object):
         if n > 0:
             nums1[:n] = nums2[:n]
 ```
+柱子能形成的最大容器
+https://leetcode.com/problems/container-with-most-water/
+```
+Input: height = [1,8,6,2,5,4,8,3,7]
+Output: 49
+Explanation: The above vertical lines are represented by array [1,8,6,2,5,4,8,3,7]. In this case, the max area of water (blue section) the container can contain is 49.
+```
+```
+class Solution(object):
+    def maxArea(self, height):
+        """
+        :type height: List[int]
+        :rtype: int
+        """
+        # 方法1:暴力解法，超时O(n^2)。每个柱子跟后面每根柱子形成的容器体积，取最大体积
+        # res = 0
+        # n = len(height)
+        # for i in range(n-1):
+        #     for j in range(i+1, n):
+        #         # 体积取决于较矮的柱子
+        #         v = min(height[i], height[j]) * (j-i)
+        #         res = max(res, v)
+        # return res
+    
+        # 方法2: 最宽的容器有可能是最大体积（第一根和最后一根）
+        # 又因为体积取决于较矮的柱子，中间可能有更高的柱子，所以我们排除较矮的柱子，重新组成容器
+        i, j = 0, len(height) - 1
+        res = 0
+        while i < j:
+            res = max(res, min(height[i], height[j]) * (j - i))
+            if height[i] < height[j]:
+                i += 1
+            else:
+                j -= 1
+        return res
+```
 成对交换链表节点
 https://leetcode.com/problems/swap-nodes-in-pairs/
 ```
@@ -380,6 +416,34 @@ class Solution(object):
             row += step
         return ''.join(zigzag)
 ```
+最长公共前缀
+https://leetcode.com/problems/longest-common-prefix/
+```
+Input: strs = ["flower","flow","flight"]
+Output: "fl"
+```
+```
+class Solution(object):
+    def longestCommonPrefix(self, strs):
+        """
+        :type strs: List[str]
+        :rtype: str
+        """
+        # 纵向比较, 一个字符一个字符比较, 看成2D array
+        res = ''
+        if len(strs) == 0:
+            return res
+        # 使用第一个字符串与其他比较
+        n = len(strs[0])
+        for i in range(n):
+            for j in range(1, len(strs)):
+                # 当当前字符已经超过其他某个字符串的长度，或者遇到字符不相等的情况，就返回结果
+                if i == len(strs[j]) or strs[0][i] != strs[j][i]:
+                    return strs[0][:i]
+        # 遍历结束，第一个字符串就是最长公共前缀
+        return strs[0]
+```
+
 ## Map & Set
 判断两个字符串是否为变位词
 https://leetcode.com/problems/valid-anagram/
