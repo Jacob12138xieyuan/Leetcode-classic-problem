@@ -133,6 +133,36 @@ class Solution(object):
             cur = first # cur = 1
         return dummy.next
 ```
+链表去掉倒数第n个节点
+https://leetcode.com/problems/remove-nth-node-from-end-of-list/
+```
+Input: head = [1,2,3,4,5], n = 2
+Output: [1,2,3,5]
+```
+```
+class Solution(object):
+    def removeNthFromEnd(self, head, n):
+        """
+        :type head: ListNode
+        :type n: int
+        :rtype: ListNode
+        """
+        # 两个指针，快指针比慢指针先走n个节点。当快指针到null时，慢指针所在的地方就是要去掉的节点
+        # 快指针先走n个节点
+        slow = fast = head
+        for _ in range(n):
+            fast = fast.next
+        # 同步走快慢指针, 出循环时快指针到null
+        dummy = ListNode(0, head)
+        pre_slow = dummy
+        while fast:
+            pre_slow = pre_slow.next
+            slow = slow.next
+            fast = fast.next
+        # 去掉slow所在节点，需要slow.prev.next = slow.next, 所以要记录slow前一个节点，使用dummy节点
+        pre_slow.next = slow.next
+        return dummy.next
+```
 三个数之和为0
 https://leetcode.com/problems/3sum/
 ```
