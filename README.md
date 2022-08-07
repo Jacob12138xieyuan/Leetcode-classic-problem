@@ -468,7 +468,27 @@ class Solution(object):
         :type heights: List[int]
         :rtype: int
         """
-        # 1.暴力解法：从每根柱子向两边扩散 O(n^2)
+        # 1.暴力解法(超时)：从每根柱子向两边扩散 O(n^2),找到两边第一个比当前柱子矮的位置
+        # 左右两端高度0的柱子
+        # heights.append(0)  
+        # n = len(heights)
+        # left = [-1]*(n-1)
+        # right = [n-1]*(n-1)
+        # res = 0
+        # for i in range(n):
+        #     # find left
+        #     for l in range(i-1, -1, -1): 
+        #         if heights[l] < heights[i]:
+        #             left[i] = l
+        #             break
+        #     # find right
+        #     for r in range(i+1, n): 
+        #         if heights[i] > heights[r]:
+        #             right[i] = r
+        #             res = max(res, heights[i]*(right[i]-left[i]-1))
+        #             break
+        # # print(left, right) # ([-1, -1, 1, 2, 1, 4], [1, 6, 4, 4, 6, 6])
+        # return res
         
         # 2.stack: 构建一个不严格递增的栈，存放柱子的index。遇到比栈顶矮的柱子，栈顶高度形成的矩形就确定了
         # 高度为栈顶柱子高度，宽度是当前i柱子到栈顶前一个柱子stack[-2]的距离
