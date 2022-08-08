@@ -511,6 +511,50 @@ class Solution(object):
                 table[key] = [str]
         return table.values()
 ```
+## Heap 堆
+合并k个排序的链表
+https://leetcode.com/problems/merge-k-sorted-lists/
+```
+Input: lists = [[1,4,5],[1,3,4],[2,6]]
+Output: [1,1,2,3,4,4,5,6]
+Explanation: The linked-lists are:
+[
+  1->4->5,
+  1->3->4,
+  2->6
+]
+merging them into one sorted list:
+1->1->2->3->4->4->5->6
+```
+```
+class Solution(object):
+    def mergeKLists(self, lists):
+        """
+        :type lists: List[ListNode]
+        :rtype: ListNode
+        """
+        # 建立一个大小为len(lists)的最小堆
+        # 最开始放入第一列的元素，弹出最小值，然后继续放入最小值后面的元素
+        # 最小堆里面需要存节点的值和节点，才能找到最小值后面的元素
+        from heapq import heappush, heappop 
+        # 假数据头
+        dummy = curr = ListNode()
+        heap = [] # heap由一个数组实现
+        # 以第一列元素建立最小堆
+        for head in lists:
+            if head:
+                heappush(heap, (head.val, head))
+        # 弹出最小值直到最小堆为空
+        while heap:
+            min_node = heappop(heap)[1]
+            # 最小值节点放入新链表
+            curr.next = min_node
+            curr = curr.next
+            # 如果下一个不为空，继续放入下一个元素
+            if min_node.next:
+                heappush(heap, (min_node.next.val, min_node.next))
+        return dummy.next
+```
 ## Stack & Set
 字符中串移除相邻字符
 https://leetcode.com/problems/remove-all-adjacent-duplicates-in-string/
