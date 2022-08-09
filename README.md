@@ -1,6 +1,6 @@
 # Leetcode-classic-problem
 
-## Array & Linked list
+## 数组和链表 Array & Linked list
 
 排序数组去重
 https://leetcode.com/problems/remove-duplicates-from-sorted-array/
@@ -321,7 +321,53 @@ class Solution(object):
                 res.append(nums[i])
         return len(res)
 ```
-## String
+## 二分查找 Binery search
+旋转排序数组里寻找某个数字
+https://leetcode.com/problems/search-in-rotated-sorted-array/
+```
+Input: nums = [4,5,6,7,0,1,2], target = 0
+Output: 4
+```
+```
+class Solution(object):
+    def search(self, nums, target):
+        """
+        :type nums: List[int]
+        :type target: int
+        :rtype: int
+        """
+        # 数组是排好序但是经过旋转，可以二分查找，但是要判断是[2,4,5,6,7,0,1]还是[6,7,0,1,2,4,5]
+        # 因为现在target和nums[mid]的大小关系不能确定target在左边还是右边
+        # 只有在确定是哪种旋转后才能确定是在左边还是右边
+        # 使用nums[left]，nums[mid]大小关系判断
+        n = len(nums)
+        left, right = 0, n-1
+        while left <= right:
+            mid = (left + right) // 2
+            if nums[mid] == target:
+                return mid
+            # 第一种情况，左边单调递增
+            if nums[left] <= nums[mid]:
+                # target有可能在左边或右边
+                # 在左边满足：
+                if nums[left] <= target <= nums[mid]:
+                    right = mid - 1
+                # 在右边
+                else:
+                    left = mid + 1
+            # 第二种情况，右边单调递增
+            else: # nums[left] > nums[mid]:
+                # target有可能在右边或左边
+                # 在右边满足：
+                if nums[mid] <= target <= nums[right]:
+                    left = mid + 1
+                # 在左边
+                else:
+                    right = mid - 1
+        return -1
+```
+
+## 字符串 String
 没有重复字母的最长子字符串
 https://leetcode.com/problems/longest-substring-without-repeating-characters/
 ```
