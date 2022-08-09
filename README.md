@@ -591,6 +591,93 @@ class Solution(object):
                 left, right = 0, 0
         return res
 ```
+括号串中最长合法括号（困难）
+https://leetcode.com/problems/longest-valid-parentheses/
+```
+Input: s = ")()())"
+Output: 4
+Explanation: The longest valid parentheses substring is "()()".
+```
+```
+class Solution(object):
+    def longestValidParentheses(self, s):
+        """
+        :type s: str
+        :rtype: int
+        """
+        # 更好的例子："(())(())"，"(()((())"  
+        # 方法1：暴力O(n^3)超时。判断每个子串是否是合法的括号，使用栈，同时可以剪枝
+        
+        # 方法2: 动态规划O(n)。dp[i]表示以i位置结尾能形成的最长括号长度
+        # 以"("结尾不可能形成，所以为0； 如果以")"结尾，dp[i] = 2+dp[i-1]+dp[i-dp[i-1]-2]
+        # 比如i最后一个位置")",dp[i-1]为2，因为中间有一对括号，对称位置是i-dp[i-1]-1，刚好为"("，所以加上中间一对括号，dp[i]结果暂时为2+2=4
+        # 还要看对称位置前面一个位置i-dp[i-1]-2是否能和之后的形成合法括号。
+        # 第一个例子里dp[i-dp[i-1]-2]为4，所以dp[i]结果为4+4=8。第一个例子里dp[i-dp[i-1]-2]为0，所以dp[i]结果为4
+        # [0, 0, 2, 4, 0, 0, 2, 8] and [0, 0, 2, 0, 0, 0, 2, 4]
+        # n = len(s)
+        # if n == 0:
+        #     return 0
+        # dp = [0] * n
+        # for i in range(n):
+        #      if s[i] == ")" and i-dp[i-1]-1 >= 0 and s[i-dp[i-1]-1] == "(":
+        #             dp[i] = 2+dp[i-1]+dp[i-dp[i-1]-2]
+        # return max(dp)
+        
+        # 方法3: 使用栈O(n)，类似方法1，思想：如果全部是合法括号，最后栈会为空，所以栈里面剩下的元素就是不合法的位置
+        # 以"(()((())"为例，0，1放入栈，2时弹出1，剩下0，说明0位置暂时不合法，0位置是合法括号的前一个位置，所以弹出时需要计算合法长度
+        # 为了统一计算，避免最开始括号就是合法导致栈为空，无法计算长度，栈最开始放入-1，方便之后计算合法括号长度
+        # 栈里长住元素代表合法括号开始的前一个位置，栈里短住数字代表最合法括号中的左括号的位置
+        # 当遇到左括号就把位置加入栈中，右括号就弹出栈顶元素，如果弹出后栈为空，代表此右括号为新的长住，如果不为空，就计算长度
+        # '(', [-1, 0]，左括号
+        # '((', [-1, 0, 1]，左括号
+        # '(()', [-1, 0]，右括号，弹出栈顶，长度为2-0=2，更新
+        # '(()(', [-1, 0, 3]，左括号
+        # '(()((', [-1, 0, 3, 4]，左括号
+        # '(()(((', [-1, 0, 3, 4, 5]，左括号
+        # '(()((()', [-1, 0, 3, 4]，右括号，弹出栈顶，长度为6-4=2，不更新
+        # '(()((())', [-1, 0, 3]，右括号，弹出栈顶，长度为7-3=4，更新
+        stack = [-1]
+        res = 0
+        for i in range(len(s)):
+            if s[i] == "(":
+                stack.append(i)
+            else:
+                # 弹出左括号，如果栈为空说明再次出现不合法的")"，加入栈
+                stack.pop()
+                if not stack:
+                    stack.append(i)
+                else:
+                    # 长度为当前位置减去栈顶位置，因为栈顶位置是匹配好括号的前一位
+                    res = max(res, i - stack[-1])
+        return res
+        
+        # 方法4:从左往右和从右往左遍历，找到最大长度，O(2n)
+        # 先从左往右，记录左右括号的个数，只要右括号大于左括号，就不合法，个数清零；如果左右括号个数相同，说明合法，记录长度，但并不清零，因为后面还可能合法
+        # 然后从右往左，相反的，只要左括号大于右括号，就不合法，其他一样
+        # res = 0
+        # left, right = 0, 0
+        # for i in range(len(s)):
+        #     if s[i] == '(':
+        #         left += 1
+        #     else:
+        #         right += 1
+        #     if left == right:
+        #         res = max(res, 2*right)
+        #     elif right >= left:
+        #         left = right = 0
+        # left, right = 0, 0
+        # for i in range(len(s)-1, -1, -1):
+        #     if s[i] == '(':
+        #         left += 1
+        #     else:
+        #         right += 1
+        #     if left == right:
+        #         res = max(res, 2*left)
+        #     elif left >= right:
+        #         left = right = 0
+        # return res
+
+```
 直方图中最大能形成的长方形
 https://leetcode.com/problems/largest-rectangle-in-histogram/
 ```
