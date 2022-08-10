@@ -228,6 +228,74 @@ class Solution(object):
                     result[-1][1] = intervals[i][1]
         return result
 ```
+跳跃游戏2(中等/困难)
+https://leetcode.com/problems/jump-game-ii/
+```
+Input: nums = [2,3,1,1,4]
+Output: 2
+Explanation: The minimum number of jumps to reach the last index is 2. Jump 1 step from index 0 to 1, then 3 steps to the last index.
+```
+```
+class Solution(object):
+    def jump(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        # 方法1:动态规划O(n^2)超时，dp[i]表示nums[0:i+1]的最小步数
+        # dp[0]=0,不用跳就到达，dp[1]=1如果dp[0]有大于等于1步
+        # dp[2]=1如果dp[0]有大于等于2步或者dp[2]=2如果dp[0]只有1步然后dp[1]有大于等于1步。。。
+        # 遍历i位置前面的位置j，找到能从j跳到到i的j值，取最小步数。dp[i]=min(dp[j])+1,0<j<i并且i-j<=nums[j]
+        # n = len(nums)
+        # dp = [0] * n
+        # for i in range(1, n):
+        #     local_min = float('inf')
+        #     for j in range(i):
+        #         # j到i的距离小于等于能从j跳的步数，说明能从j跳到i
+        #         if i-j <= nums[j]:
+        #             local_min = min(local_min, dp[j])
+        #     dp[i] = local_min + 1
+        # # print(dp) # [0, 1, 1, 2, 2]
+        # return dp[-1]
+        
+        # 方法2:倒推法，贪心算法，O(n^2)但是不超时，因为有大量的剪枝
+        # position从最后一个位置开始，找最后一跳最左边的起跳位置，依次倒推找前面的起跳位置
+        # position = len(nums) - 1;
+        # steps = 0;
+        # # 只要还没跳回起点，就一直倒推
+        # while position != 0:
+        #     # 判断是否能从前面的位置i跳到位置position, 如果可以就找到了最左边的起跳位置
+        #     for i in range(position):
+        #         if  position - i <= nums[i]:
+        #             position = i
+        #             steps += 1
+        #             break
+        # return steps
+
+        # 方法3:贪心算法，线性扫描O(n)。
+        # [2,1,3,1,1,4]，如果len(nums)>1,至少一跳，跳出起点。初始last_max_range=0，表示i=0就是极限位置，必须跳
+        # i=0，最大能到的位置cur_max_range是i+nums[i]=2，0==last_max_range，到达极限，要更新last_max_range为cur_max_range=2
+        # 意思是下一跳必须从[1,3]开始，第二跳肯定在其中，到最大位置i=2时为极限，必须跳
+        # 所以当i==last_max_range时，增加一步，并不是说在极限位置跳，而是在这个区间里面跳
+        # i=1，最大能到的位置cur_max_range为2。
+        # i=2，最大能到的位置max_range为5，i==last_max_range，达到极限，必须跳一步，更新last_max_range为5
+        # 如果最大能到的位置覆盖最后一个位置，就可以提前结束循环
+        n = len(nums)
+        steps = 0
+        last_max_range = 0
+        cur_max_range = 0
+        # 最后一个位置不用遍历，已经到达
+        for i in range(n-1):
+            cur_max_range = max(cur_max_range, i+nums[i])
+            if cur_max_range >= n - 1:
+                steps += 1
+                break
+            # 到达极限，需要跳一步
+            if i == last_max_range:
+                steps += 1
+                last_max_range = cur_max_range
+        return steps
+```
 两个排序数组中的中位数
 https://leetcode.com/problems/median-of-two-sorted-arrays/
 ```
