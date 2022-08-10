@@ -918,7 +918,87 @@ class Solution(object):
         return dp[0][0]
 ```
 ## Recursion
-14. https://leetcode.com/problems/maximum-depth-of-binary-tree/
+排列（中等）
+https://leetcode.com/problems/permutations/
+```
+Input: nums = [1,2,3]
+Output: [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]
+```
+```
+class Solution(object):
+    def permute(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[List[int]]
+        """
+        # 回溯算法O(2^n)指数型时间复杂度
+        # 依次从nums里选一个数字，然后依次再从剩下的数字里选一个数字。。。不断递归分支出去，记录剩下的nums和已经选好的数字curr
+        self.res = []
+        self.helper(nums, [])
+        return self.res
+        
+    def helper(self, nums, curr):
+        # 数字选完就跳出递归，加入结果
+        if len(nums) == 0:
+            self.res.append(curr)
+        # 依次从剩下的数字中选择。先选1，剩下[2,3]，然后分支得到[1,2],[1,3]，最后分别剩下3，2，分支得到[[1,2,3],[1,3,2]
+        # 从1开始的就选完了，开始选择2，剩下[1,3]......
+        for i in range(len(nums)):
+            self.helper(nums[:i]+nums[i+1:], curr+[nums[i]])
+```
+n皇后问题（困难）
+https://leetcode.com/problems/n-queens/
+```
+Input: n = 4
+Output: [[".Q..","...Q","Q...","..Q."],["..Q.","Q...","...Q",".Q.."]]
+Explanation: There exist two distinct solutions to the 4-queens puzzle as shown above
+```
+```
+class Solution(object):
+    def solveNQueens(self, n):
+        """
+        :type n: int
+        :rtype: List[List[str]]
+        """
+        # 回溯算法，指数型时间复杂度。模拟放棋子的过程，对每行每一格每一格的试，放了一行放下一行，判断这样放是否合法
+        self.res = []
+        self.board = [['.' for _ in range(n)] for _ in range(n)]
+        # 从第一行开始放
+        self.dfs(0)
+        return self.res
+    
+    def dfs(self, row):
+        if row == len(self.board):
+            # 已经放完最后一行，到达这里表示前面放法都合法，加入结果
+            temp = []
+            for i in range(len(self.board)):
+                temp.append(''.join(self.board[i]))
+            self.res.append(temp)
+            return
+        # 当前正在放第row行的queen，遍历每列（每格）
+        for col in range(len(self.board[0])):
+            # 判断放法是否合法，如果合法就放下一行
+            if self.isValid(row, col):
+                self.board[row][col] = 'Q'
+                # 分支出去下一行
+                self.dfs(row + 1)
+                # 复原棋盘，尝试下一个格子
+                self.board[row][col] = '.'
+    
+    def isValid(self, row, col):
+        # 遍历当前board中已经放好的queen（棋盘上面部分），看当前要放的queen位置是否合法
+        # 1. 判断当前列是否有queen
+        for i in range(row):
+            if self.board[i][col] == 'Q': return False
+        # 2. 判断当前位置往左对角线是否有queen
+        for i, j in zip(range(row-1, -1, -1), range(col-1, -1, -1)):
+            if self.board[i][j] == 'Q': return False
+        # 3. 判断当前位置往右对角线是否有queen
+        for i, j in zip(range(row-1, -1, -1), range(col+1, len(self.board[0]))):
+            if self.board[i][j] == 'Q': return False
+        return True
+```
+https://leetcode.com/problems/maximum-depth-of-binary-tree/
 ```
 class Solution(object):
     def maxDepth(self, root):
@@ -930,7 +1010,7 @@ class Solution(object):
             return 0
         return max(self.maxDepth(root.left), self.maxDepth(root.right)) + 1
 ```
-15. https://leetcode-cn.com/problems/symmetric-tree/
+https://leetcode-cn.com/problems/symmetric-tree/
 ```
 class Solution(object):
     def isSymmetric(self, root):
