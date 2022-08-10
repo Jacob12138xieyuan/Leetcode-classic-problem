@@ -1,6 +1,47 @@
 # Leetcode-classic-problem
 
 ## 数组和链表 Array & Linked list
+加起来和最大的子数组
+https://leetcode.com/problems/maximum-subarray/
+```
+Input: nums = [-2,1,-3,4,-1,2,1,-5,4]
+Output: 6
+Explanation: [4,-1,2,1] has the largest sum = 6.
+```
+```
+class Solution(object):
+    def maxSubArray(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        # 方法1:动态规划dp[i]表示以nums[i]结尾的子数组能形成的最大和
+        # dp[i]=max(dp[i-1]+nums[i],nums[i])，两种情况，在前面数字结尾的子数组基础上加上当前数字，或者另起炉灶
+        # n = len(nums)
+        # dp = [nums[0]] * n
+        # for i in range(1, n):
+        #     dp[i] = max(dp[i-1] + nums[i], nums[i])
+        # # print(dp) # [-2, 1, -2, 4, 3, 5, 6, 1, 5]
+        # return max(dp)
+        
+        # 方法2:优化动态规划，因为dp[i]只取决于dp[i-1],所以只用一个变量来记录dp[i-1],也就是curr_max
+        n = len(nums)
+        curr_max = final_max = nums[0]
+        for i in range(1, n):
+            curr_max = max(curr_max + nums[i], nums[i])
+            # 如果当前数字结尾的子数组和比前面的子数组和更大，就更新结果
+            final_max = max(final_max, curr_max)
+        return final_max
+        
+        # 方法3:思想转变为：只要curr_max是正数，加上当前的数就可能变得更大。时间不会更快因为有max()操作
+        # 但如果当前的数是负数，和不会变得更大。但是只要和不为负数，就可以为后面出一份力，后面一个数可能很大可以弥补，比如[5,4,-1,7,8]
+        # 如果当前负数很小，导致和为负数，我们就会抛弃前面，另起炉灶
+        # for i in range(1, len(nums)):
+        #     if nums[i-1] > 0:
+        #         nums[i] += nums[i-1]
+        # # print(nums) # [5, 9, 8, 15, 23]
+        # return max(nums)
+```
 
 排序数组去重
 https://leetcode.com/problems/remove-duplicates-from-sorted-array/
