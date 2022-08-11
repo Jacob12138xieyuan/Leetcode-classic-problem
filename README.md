@@ -475,6 +475,38 @@ class Solution(object):
                     right = mid - 1
         return -1
 ```
+在排序矩阵中找到数字
+https://leetcode.com/problems/search-a-2d-matrix/
+```
+Input: matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 3
+Output: true
+```
+```
+class Solution(object):
+    def searchMatrix(self, matrix, target):
+        """
+        :type matrix: List[List[int]]
+        :type target: int
+        :rtype: bool
+        """
+        # 从右上角出发，因为右上角左边的数字都比他小，下面的数字都比他大，可以二分查找
+        # 当目标数比右上角小，就往左边找，j-=1；当目标数比右上角大，就往下面一行找，i+=1，再把目标数与下一行的数进行比较。。。
+        if len(matrix) == 0:
+            return 0
+        # i代表行，j代表列，从右上角开始
+        i = 0 
+        j = len(matrix[0]) - 1
+        while j>=0 and i<=len(matrix)-1:
+            if matrix[i][j] == target:
+                return True
+            # 当目标数比右上角小
+            elif target < matrix[i][j]:
+                j -= 1
+            # 当目标数比右上角大
+            else:
+                i += 1
+        return False
+```
 
 ## 字符串 String
 没有重复字母的最长子字符串
@@ -891,7 +923,8 @@ class Solution(object):
         heights.pop()
         return ans
 ```
-11. https://leetcode.com/problems/trapping-rain-water/
+洼地能装的雨水量
+https://leetcode.com/problems/trapping-rain-water/
 ```
 class Solution(object):
     def trap(self, height):
@@ -899,76 +932,75 @@ class Solution(object):
         :type height: List[int]
         :rtype: int
         """
-        stack = []
-        i = 0
+        # materarea[i] = min(leftmaxheight, rightmaxheight) - height[i], so we can expand to left and right, O(n^2)
+        # we can traverse from left to right to record leftmaxheight for every block, and right to left to record rightmaxheight
+        # reduce to O(n)
+        n = len(height)
+        if n == 0:
+            return 0
+        leftmaxheight = height[0]
+        leftmaxheights = [height[0]]
+        rightmaxheight = height[-1]
+        rightmaxheights = [height[-1]]
+        for i in range(1, n): # first height cannot store water
+            leftmaxheights.append(leftmaxheight)
+            leftmaxheight = max(height[i], leftmaxheight)
+        reversed_height = height[::-1]
+        for i in range(n-1, -1, -1): # last height cannot store water
+            rightmaxheights.append(rightmaxheight)
+            rightmaxheight = max(height[i], rightmaxheight) 
+        rightmaxheights = rightmaxheights[::-1]
+        # print(leftmaxheights, rightmaxheights) # ([0, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3], [3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 1, 1])
+        # e.g. height[2] has leftmax 1, rightmax, 3, so min(1, 3) = 1, water area = 1
+        # sum all water area
         res = 0
-        while i < len(height):
-            while stack and height[i] > height[stack[-1]]:
-                top = stack.pop()
-                if not stack: break
-                h = min(height[i], height[stack[-1]]) - height[top]
-                w = i - stack[-1] - 1
-                res += h*w
-            stack.append(i)
-            i += 1
+        for i in range(1, n-1):
+            bottleneck = min(leftmaxheights[i], rightmaxheights[i])
+            if bottleneck > height[i]: # can store water
+                res += bottleneck - height[i]
         return res
 ```
-## 二分查找 Bineary search
-
-https://leetcode.com/problems/powx-n/
+## 动态规划
+从左上角到右下角不同的走法
+https://leetcode.com/problems/unique-paths-ii/
 ```
-class Solution(object):
-    def myPow(self, x, n):
-        """
-        :type x: float
-        :type n: int
-        :rtype: float
-        """
-        #x^10 = (x^5)^2 = (x^2*x^*2*x)^2
-        if n == 0:
-            return 1
-        if n == 1:
-            return x
-        if n == -1:
-            return 1/x
-        if n%2 == 0:
-            num = self.myPow(x, n/2)
-            return num*num
-        else:
-            num = self.myPow(x, (n-1)/2)
-            return num*num*x
-```
-在排序矩阵中找到数字
-https://leetcode.com/problems/search-a-2d-matrix/
-```
-Input: matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 3
-Output: true
+Input: obstacleGrid = [[0,0,0],[0,1,0],[0,0,0]]
+Output: 2
+Explanation: There is one obstacle in the middle of the 3x3 grid above.
 ```
 ```
 class Solution(object):
-    def searchMatrix(self, matrix, target):
+    def uniquePathsWithObstacles(self, obstacleGrid):
         """
-        :type matrix: List[List[int]]
-        :type target: int
-        :rtype: bool
+        :type obstacleGrid: List[List[int]]
+        :rtype: int
         """
-        # 从右上角出发，因为右上角左边的数字都比他小，下面的数字都比他大，可以二分查找
-        # 当目标数比右上角小，就往左边找，j-=1；当目标数比右上角大，就往下面一行找，i+=1，再把目标数与下一行的数进行比较。。。
-        if len(matrix) == 0:
-            return 0
-        # i代表行，j代表列，从右上角开始
-        i = 0 
-        j = len(matrix[0]) - 1
-        while j>=0 and i<=len(matrix)-1:
-            if matrix[i][j] == target:
-                return True
-            # 当目标数比右上角小
-            elif target < matrix[i][j]:
-                j -= 1
-            # 当目标数比右上角大
+        # 特殊情况：1. 障碍在第一行或第一列，右边或下边的格子都为0 2.障碍在起点或终点，返回0
+        if obstacleGrid[0][0] == 1 or obstacleGrid[-1][-1] == 1: return 0
+        dp = [[0 for _ in range(len(obstacleGrid[0]))] for _ in range(len(obstacleGrid))]
+        # 判断第一列有没有障碍
+        for i in range(len(obstacleGrid)):
+            if obstacleGrid[i][0] == 0:
+                dp[i][0] = 1 
             else:
-                i += 1
-        return False
+                break
+        # 判断第一行有没有障碍
+        for j in range(len(obstacleGrid[0])):
+            if obstacleGrid[0][j] == 0:
+                dp[0][j] = 1
+            else:
+                break
+        # 其他行列
+        for i in range(1, len(obstacleGrid)):
+            for j in range(1, len(obstacleGrid[0])):
+                # 如果遇到障碍，默认为0
+                if obstacleGrid[i][j] == 0:
+                    dp[i][j] = dp[i-1][j] + dp[i][j-1]
+        # print(dp)
+        # [1, 1, 1]
+        # [1, 0, 1]
+        # [1, 1, 2]
+        return dp[-1][-1]
 ```
 地牢游戏
 https://leetcode.com/problems/dungeon-game/
@@ -992,8 +1024,8 @@ class Solution(object):
                     dp[i][j] = val
         return dp[0][0]
 ```
-## Recursion
-排列（中等）
+## 递归 Recursion
+不同数字的所有排列方式（中等）
 https://leetcode.com/problems/permutations/
 ```
 Input: nums = [1,2,3]
@@ -1073,6 +1105,9 @@ class Solution(object):
             if self.board[i][j] == 'Q': return False
         return True
 ```
+
+## 二叉树 Binary tree
+二叉树最大深度
 https://leetcode.com/problems/maximum-depth-of-binary-tree/
 ```
 class Solution(object):
@@ -1085,6 +1120,7 @@ class Solution(object):
             return 0
         return max(self.maxDepth(root.left), self.maxDepth(root.right)) + 1
 ```
+判断二叉树是否对称
 https://leetcode-cn.com/problems/symmetric-tree/
 ```
 class Solution(object):
@@ -1104,7 +1140,8 @@ class Solution(object):
             return False
         return self.helper(left.left, right.right) and self.helper(left.right, right.left)
 ```
-16. https://leetcode.com/problems/minimum-depth-of-binary-tree/
+二叉树最小深度
+https://leetcode.com/problems/minimum-depth-of-binary-tree/
 ```
 class Solution(object):
     def minDepth(self, root):
@@ -1122,7 +1159,8 @@ class Solution(object):
         
         return min(self.minDepth(root.left), self.minDepth(root.right)) + 1
 ```
-17. https://leetcode.com/problems/minimum-distance-between-bst-nodes/
+二叉树两节点值最小的差值
+https://leetcode.com/problems/minimum-distance-between-bst-nodes/
 ```
 class Solution(object):
     def minDiffInBST(self, root):
@@ -1145,7 +1183,8 @@ class Solution(object):
         res.append(root.val)
         self.inOrder(root.right, res)
 ```
-18. https://leetcode.com/problems/binary-tree-paths/
+输出二叉树的所有路线
+https://leetcode.com/problems/binary-tree-paths/
 ```
 class Solution(object):
     def binaryTreePaths(self, root):
@@ -1168,8 +1207,7 @@ class Solution(object):
             path += str(node.val)
             self.res.append(path)
 ```
-
-19. https://leetcode.com/problems/range-sum-of-bst/
+https://leetcode.com/problems/range-sum-of-bst/
 ```
 class Solution(object): 
       def rangeSumBST(self, root, L, R):
@@ -1186,7 +1224,8 @@ class Solution(object):
         dfs(root)
         return self.ans  
 ```
-20. https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/
+二叉树两个节点最近公共祖先
+https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/
 ```
 class Solution:
     def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
