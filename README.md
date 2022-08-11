@@ -913,8 +913,9 @@ class Solution(object):
             i += 1
         return res
 ```
-## Bineary search
-12. https://leetcode.com/problems/powx-n/
+## 二分查找 Bineary search
+
+https://leetcode.com/problems/powx-n/
 ```
 class Solution(object):
     def myPow(self, x, n):
@@ -937,7 +938,40 @@ class Solution(object):
             num = self.myPow(x, (n-1)/2)
             return num*num*x
 ```
-13. https://leetcode.com/problems/dungeon-game/
+在排序矩阵中找到数字
+https://leetcode.com/problems/search-a-2d-matrix/
+```
+Input: matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 3
+Output: true
+```
+```
+class Solution(object):
+    def searchMatrix(self, matrix, target):
+        """
+        :type matrix: List[List[int]]
+        :type target: int
+        :rtype: bool
+        """
+        # 从右上角出发，因为右上角左边的数字都比他小，下面的数字都比他大，可以二分查找
+        # 当目标数比右上角小，就往左边找，j-=1；当目标数比右上角大，就往下面一行找，i+=1，再把目标数与下一行的数进行比较。。。
+        if len(matrix) == 0:
+            return 0
+        # i代表行，j代表列，从右上角开始
+        i = 0 
+        j = len(matrix[0]) - 1
+        while j>=0 and i<=len(matrix)-1:
+            if matrix[i][j] == target:
+                return True
+            # 当目标数比右上角小
+            elif target < matrix[i][j]:
+                j -= 1
+            # 当目标数比右上角大
+            else:
+                i += 1
+        return False
+```
+地牢游戏
+https://leetcode.com/problems/dungeon-game/
 ```
 class Solution(object):
     def calculateMinimumHP(self, dungeon):
