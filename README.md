@@ -660,6 +660,64 @@ class Solution(object):
         # 遍历结束，第一个字符串就是最长公共前缀
         return strs[0]
 ```
+字符串中最短的子串包含另一字符串中的所有字符
+https://leetcode.com/problems/minimum-window-substring/
+```
+Input: s = "ADOBECODEBANC", t = "ABC"
+Output: "BANC"
+Explanation: The minimum window substring "BANC" includes 'A', 'B', and 'C' from string t.
+```
+```
+class Solution(object):
+    def minWindow(self, s, t):
+        """
+        :type s: str
+        :type t: str
+        :rtype: str
+        """
+        # 首先构建一个t_map，存t中的字符和字符数量
+        # 然后使用两个指针i=0,j=0,指向滑动窗口两端，使用另一个window_map存当前滑动窗口中的字符及数量
+        # j向右移动，遇到字符就加入window_map，我们想要window_map与t_map相同，但是window_map里面字符数量可能大于t_map，出现了两个B，比如：
+        #  i    j
+        # "ABOBECODEBANC"
+        # 我们需要变量formed记录window满足了几个字符的数量，两个B>=一个B，也是满足。当前formed=3=t_map长度。form+=1条件是某个字符达到了t_map中的数量
+        # formed达到3后，因为可能出现"AAABC"的情况，要最小长度，所以i要向右移，只要formed=3，就检查子串长度有没有更小
+        # form-=1条件是i的字符在t_map中，并且window中这个字符数量小于t所需要的数量。直到formed<3，i停止右移，j开始右移，直到formed再次等于3
+        t_map = {}
+        for c in t:
+            if c in t_map:
+                t_map[c] += 1
+            else:
+                t_map[c] = 1
+        window_map = {}
+        formed = 0
+        i = 0
+        min_len = float('inf')
+        res = (0, 0) # start, end
+        # j右移，如果是t里面的字符，就加入window_map
+        for j in range(len(s)):
+            if s[j] in t_map:
+                if s[j] in window_map:
+                    window_map[s[j]] += 1
+                else:
+                    window_map[s[j]] = 1
+                # 判断formed是否加一
+                if window_map[s[j]] == t_map[s[j]]:
+                    formed += 1
+                # formed达到3，记录子串长度，i右移，从window_map移除一个，直到formed<3
+                while formed == len(t_map) and i <= j:
+                    # 更短子串
+                    if j-i+1 < min_len:
+                        min_len = j - i + 1
+                        res = (i, j)
+                    if s[i] in t_map:
+                        window_map[s[i]] -= 1
+                        # 判断formed是否减一
+                        if window_map[s[i]] < t_map[s[i]]:
+                            formed -= 1
+                    i += 1
+        return "" if min_len == float("inf") else s[res[0] : res[1] + 1]
+```
 
 ## Map & Set
 判断两个字符串是否为变位词
