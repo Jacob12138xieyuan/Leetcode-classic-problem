@@ -147,6 +147,63 @@ class Solution(object):
                 j -= 1
         return res
 ```
+反转整个链表
+https://leetcode.com/problems/reverse-linked-list/
+```
+Input: head = [1,2,3,4,5]
+Output: [5,4,3,2,1]
+```
+```
+# Definition for singly-linked list.
+# class ListNode(object):
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution(object):
+    def reverseList(self, head):
+        """
+        :type head: ListNode
+        :rtype: ListNode
+        """
+        # 思考方式1：从第二个数开始，依次把数字移到最前面
+        # dummy->1->2->3->4->5
+        # dummy->2->1->3->4->5
+        # dummy->3->2->1->4->5
+        # dummy->4->3->2->1->5
+        # dummy->5->4->3->2->1
+        # 只有一个数字的情况
+        if not head or not head.next:
+            return head
+        # 多于一个数字的情况
+        dummy = ListNode(0, head)
+        curr = head.next # 2
+        pre_curr = head # 1
+        while curr:
+            pre_curr.next = curr.next # 1->3
+            next_curr = curr.next
+            curr.next = dummy.next # 2->1
+            dummy.next = curr # dummy->2
+            curr = next_curr # curr=3      
+        return dummy.next
+        
+        # 思考方式2:后面一个数指向前面一个数
+        # None  1->2->3->4->5
+        # None<-1  2->3->4->5
+        # None<-1<-2  3->4->5
+        # None<-1<-2<-3  4->5
+        # None<-1<-2-<3<-4  5
+        # None<-1<-2<-3<-4<-5
+        if not head or not head.next:
+            return head
+        pre = None
+        curr = head # 1 
+        while curr:
+            cur_next = cur.next # 2
+            curr.next = pre # 1->None
+            pre = curr
+            curr = curr_next # 2
+        return pre
+```
 成对交换链表节点
 https://leetcode.com/problems/swap-nodes-in-pairs/
 ```
