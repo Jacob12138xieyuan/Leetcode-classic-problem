@@ -1083,7 +1083,46 @@ class Solution(object):
         return dp[0][0]
 ```
 ## 递归 Recursion
-不同数字的所有排列方式（中等）
+数字的所有组合方式（中等）
+https://leetcode.com/problems/combinations/
+```
+Input: n = 4, k = 2
+Output:
+[
+  [2,4],
+  [3,4],
+  [2,3],
+  [1,2],
+  [1,3],
+  [1,4],
+]
+```
+```
+class Solution(object):
+    def combine(self, n, k):
+        """
+        :type n: int
+        :type k: int
+        :rtype: List[List[int]]
+        """
+        # [1,2,3,4],先选1，然后再依次选剩下的数，然后选2，然后选2后面的数。。。
+        nums = [i+1 for i in range(n)]
+        self.k = k
+        self.res = []
+        # 需要传入剩下的数nums，当前已经选好的数
+        self.helper(nums, [])
+        return self.res
+    
+    def helper(self, nums, curr):
+        if len(curr) == self.k:
+            self.res.append(curr)
+            return
+        # 开始依次选，分支出去
+        for i in range(len(nums)):
+            self.helper(nums[i+1:], curr+[nums[i]])
+        
+```
+数字的所有排列方式（中等）
 https://leetcode.com/problems/permutations/
 ```
 Input: nums = [1,2,3]
