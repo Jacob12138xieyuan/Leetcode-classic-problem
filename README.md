@@ -55,7 +55,7 @@ It does not matter what you leave beyond the returned k (hence they are undersco
 class Solution(object):
     def removeDuplicates(self, nums):
         # 使用快（j=1）慢（i=0）指针。只要j所在的元素不等于i所在的元素，就把i后面的元素变为j元素，i往右移
-        # 可以理解为i和i前面的数都是不重复的
+        # 可以理解为i和i前面的数都是不重复的，i后面的位置应该放下一个不重复的数字
         i = 0
         for j in range(1, len(nums)):
             if nums[i] != nums[j]:
